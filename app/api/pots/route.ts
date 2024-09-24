@@ -7,9 +7,9 @@ import path from "path";
 export async function GET(req: NextRequest) {
     try {
 
-        const folder_path = path.join(process.cwd(),"public");
+        const folder_path = path.join(process.cwd(), "public");
         const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-        
+
         const queryString = req.nextUrl.searchParams.get('q') || ''
 
         const k = req.nextUrl.searchParams.get('k') || '1'
@@ -19,8 +19,8 @@ export async function GET(req: NextRequest) {
             new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
         );
 
-        const results = await vectorStore.similaritySearch(queryString,parseInt(k));
-
+        const res = await vectorStore.similaritySearch(queryString, parseInt(k));
+        const results = res.map(data => JSON.parse(data.pageContent))
 
         return NextResponse.json(results, { status: 200 });
 
